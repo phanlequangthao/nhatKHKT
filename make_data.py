@@ -155,16 +155,6 @@ for cl in label:
                 hand_landmarks = results_hand.multi_hand_landmarks[0] if results_hand.multi_hand_landmarks else None
                 pose_landmarks = results_pose.pose_landmarks if results_pose.pose_landmarks else None
                 
-                if hand_landmarks:
-                    bbox = get_hand_bbox(hand_landmarks, width, height)
-                    cv2.rectangle(frameRGB, bbox[0], bbox[1], (255, 255, 255), 1)
-                    x, y, w, h = convert_coordinates(bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1], width, height)
-                    filename = f"data/image/{cl}_{cnt_img}.jpg"
-                    cv2.imwrite(filename, frame)
-                    label_filename = os.path.join("data/label/", f"{cl}_{cnt_img}.txt")
-                    with open(label_filename, 'a') as label_file:
-                        label_file.write(f'{label.index(cl)} {x} {y} {w} {h} \n')
-                
                 lm = make_dat(hand_landmarks, pose_landmarks)
                 lm_list.append(lm)
                 frame = draw_land(mpDraw, results_hand, results_pose, frame)
