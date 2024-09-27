@@ -134,11 +134,11 @@ def convert_coordinates(x1, y1, x2, y2, image_width, image_height):
 for cl in label:
     cnt = 0
     cnt_img = 0
-    for file in os.listdir(f'./video/{cl}'):
+    for file in os.listdir(f'./videoposeahand/{cl}'):
         lm_list = []
         print(f'cnt: {cnt}, lm_list: {lm_list}')
         print(f'processing: ./video/{cl}/{file}')
-        cap = cv2.VideoCapture(f'./video/{cl}/{file}')
+        cap = cv2.VideoCapture(f'./videoposeahand/{cl}/{file}')
         cap.set(640,640)
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -160,7 +160,7 @@ for cl in label:
                 frame = draw_land(mpDraw, results_hand, results_pose, frame)
             
             cnt_img += 1
-            cv2.imshow(f'processing: ./video/{cl}/{file}', frame)
+            # cv2.imshow(f'processing: ./video/{cl}/{file}', frame)
             if cv2.waitKey(1) == ord('q'):
                 break
 
