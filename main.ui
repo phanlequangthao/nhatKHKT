@@ -20,7 +20,9 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QMainWindow {
+       background-color: #f0f0f0; /* Thay đổi màu nền cho MainWindow */
+   }</string>
   </property>
   <property name="animated">
    <bool>true</bool>
@@ -37,6 +39,7 @@
     </property>
     <property name="font">
      <font>
+      <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
       <underline>false</underline>
@@ -89,14 +92,15 @@
         <widget class="QPushButton" name="clear">
          <property name="styleSheet">
           <string notr="true">QPushButton {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(116, 116, 116), stop: 1 rgba(50, 50, 50));
-                              border: 15px;
-                              color: rgb(255, 255, 255);
-                              font: 20pt &quot;Segoe MDL2 Assets&quot;;
-                              border-radius: 10px;
+                              background-color: #4CAF50; /* Màu xanh lá cây */
+                              border: none;
+                              color: white;
+                              font: 16px &quot;Segoe UI&quot;;
+                              border-radius: 5px;
+                              padding: 10px 20px; /* Thêm padding */
                           }
                           QPushButton:pressed {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(50, 50, 50), stop: 1 rgba(116, 116, 116));
+                              background-color: #45a049; /* Màu khi nhấn */
                           }</string>
          </property>
          <property name="text">
@@ -133,14 +137,15 @@
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(116, 116, 116), stop: 1 rgba(50, 50, 50));
-                              border: 15px;
-                              color: rgb(255, 255, 255);
-                              font: 20pt &quot;Segoe MDL2 Assets&quot;;
-                              border-radius: 10px;
+                              background-color: #008CBA; /* Màu xanh dương */
+                              border: none;
+                              color: white;
+                              font: 16px &quot;Segoe UI&quot;;
+                              border-radius: 5px;
+                              padding: 10px 20px; /* Thêm padding */
                           }
                           QPushButton:pressed {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(50, 50, 50), stop: 1 rgba(116, 116, 116));
+                              background-color: #007B9E; /* Màu khi nhấn */
                           }</string>
          </property>
          <property name="text">
@@ -229,6 +234,7 @@
           <font>
            <family>Segoe UI</family>
            <pointsize>16</pointsize>
+           <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
            <underline>false</underline>
@@ -256,6 +262,7 @@
           <font>
            <family>Segoe UI</family>
            <pointsize>16</pointsize>
+           <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
            <underline>false</underline>
@@ -331,14 +338,15 @@
         <widget class="QPushButton" name="send">
          <property name="styleSheet">
           <string notr="true">QPushButton {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(116, 116, 116), stop: 1 rgba(50, 50, 50));
-                              border: 15px;
-                              color: rgb(255, 255, 255);
-                              font: 20pt &quot;Segoe MDL2 Assets&quot;;
-                              border-radius: 10px;
+                              background-color: #f44336; /* Màu đỏ */
+                              border: none;
+                              color: white;
+                              font: 16px &quot;Segoe UI&quot;;
+                              border-radius: 5px;
+                              padding: 10px 20px; /* Thêm padding */
                           }
                           QPushButton:pressed {
-                              background-color: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 rgba(50, 50, 50), stop: 1 rgba(116, 116, 116));
+                              background-color: #d32f2f; /* Màu khi nhấn */
                           }</string>
          </property>
          <property name="text">

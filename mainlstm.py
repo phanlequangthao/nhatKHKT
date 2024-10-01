@@ -175,8 +175,8 @@ class Ham_Camera(QThread):
         self.trangThai = True
         self.string = ""
         self.string2 = ""
-        self.frame_count_threshold = 20
-        self.current_frame_count = 0
+        self.f_cnt_threshold = 20
+        self.current_f_cnt = 0
         self.luongString1.connect(self.update_string1)
         self.luongString2.connect(self.update_string2)
         self.luongClearSignal.connect(self.clear_string)
@@ -234,17 +234,22 @@ class Ham_Camera(QThread):
         results = model.predict(lm_list)
         predicted_label_index = np.argmax(results, axis=1)[0]
         classes = ['a', 'b', 'c', 'o', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
-            'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
-            'i_love_you', 'thank_you', 'sorry']
+         'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
+         'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
+         'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
+         'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad']
         confidence = np.max(results, axis=1)[0]
         if confidence > 0.95:
-            label = classes[predicted_label_index]
+            temp = classes[predicted_label_index]
+            if temp == "space":
+                label = " "
+            else:
+                label = temp.replace("_", " ")
         else:
             label = "cant detect"
 
     def run(self):
-        model = load_model('./model/model_9.keras')
+        model = load_model('./model/best_model_12.h5')
 
         cap = cv2.VideoCapture(camera_index)
         cap.set(3, 640)
@@ -253,10 +258,10 @@ class Ham_Camera(QThread):
 
         threading.Thread(target=self.receive_frame, daemon=True).start()
 
+        f_cnt = 0 
         while self.trangThai:
             ret, frame1 = cap.read()
             frame2 = self.latest_frame_from_server
-            #hello
             if ret:
                 image1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
                 cv2.imwrite('shared_frame.jpg', image1)
@@ -271,14 +276,19 @@ class Ham_Camera(QThread):
                             label = self.detect(model, lm_list)
                             lm_list = []
 
-                            if label != "neutral" and label != self.checkTrung:
-                                if label == "space":
-                                    self.string += " "
+                            if label != "neutral":
+                                if label == self.checkTrung:
+                                    f_cnt += 1  
                                 else:
-                                    self.string += label
-                                self.luongString1.emit(self.string)
-                                self.checkTrung = label
-                                self.checkTrungChanged.emit(self.checkTrung)
+                                    f_cnt = 1  
+                                    self.checkTrung = label  
+                                if f_cnt >= 10:  
+                                    if label == "space":
+                                        self.string += " "
+                                    else:
+                                        self.string += label
+                                    self.luongString1.emit(self.string)
+                                    self.checkTrungChanged.emit(self.checkTrung)
 
                 image1.flags.writeable = True
                 try:

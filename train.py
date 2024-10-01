@@ -14,9 +14,10 @@ classes = ['a', 'b', 'c', 'o', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
          'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
          'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
-         'who', 'where', 'when', 'how', 'how_much', 'go', 'happy', 
-         'sad', 'good', 'bad']
-num_of_timesteps = 9
+         'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad']
+
+
+num_of_timesteps = 12
 num_classes = len(classes)
 
 X, y = [], []

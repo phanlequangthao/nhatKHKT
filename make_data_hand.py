@@ -15,7 +15,7 @@ mpDraw = mp.solutions.drawing_utils
 #          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
 #          'who', 'where', 'when', 'how', 'how_much', 'go', 'happy', 
 #          'sad', 'angry', 'good', 'bad']
-label = [ 'sorry', 'x', 'thank_you']
+label = [ 'no', 'when', 'thank_you']
 
 
 # if os.path.exists('./dataset'):

@@ -3,7 +3,7 @@ import cv2
 cap = cv2.VideoCapture(0)
 
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('sorry.mp4', fourcc, 20.0, (640, 480)) 
+out = cv2.VideoWriter('thank_you.mp4', fourcc, 20.0, (640, 480)) 
 # new_label = ['do', 'eat', 'what', 'why', 'who', 'where', 'when', 
 #              'how', 'how_much', 'go', 'happy', 'sad', 'angry', 
 #              'good', 'bad']  

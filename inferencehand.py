@@ -11,8 +11,8 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
     tf.config.experimental.set_visible_devices(physical_devices[0], 'GPU')
 
-num_of_timesteps = 9
-model = load_model(f'model/best_model_9.h5')
+num_of_timesteps = 12
+model = load_model(f'model/model_12.keras')
 
 mppose = mp.solutions.pose
 pose = mppose.Pose()
@@ -105,14 +105,10 @@ def detect(model, lm_list):
          'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
          'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
-         'who', 'where', 'when', 'how', 'how_much', 'go', 'happy', 
-         'sad', 'good', 'bad'] 
+         'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad']
     #no, thankyou, how, good, when
     confidence = np.max(results, axis=1)[0]
-    if confidence > 0.85:
-        label = classes[predicted_label_index]
-    else:
-        label = "cant detect"
+    label = classes[predicted_label_index]
 
 
 cap = cv2.VideoCapture(0)
