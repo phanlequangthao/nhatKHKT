@@ -249,11 +249,11 @@ class Ham_Camera(QThread):
             label = "cant detect"
 
     def run(self):
-        model = load_model('./model/best_model_12.h5')
+        model = load_model('./model/best_model_12.h5')# chạy mô hình
 
-        cap = cv2.VideoCapture(camera_index)
+        cap = cv2.VideoCapture(camera_index) #chạy camera
         cap.set(3, 640)
-        cap.set(4, 480)
+        cap.set(4, 480) # set lại khung hình
         lm_list = []
 
         threading.Thread(target=self.receive_frame, daemon=True).start()
@@ -265,24 +265,26 @@ class Ham_Camera(QThread):
             if ret:
                 image1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
                 cv2.imwrite('shared_frame.jpg', image1)
-                results_hand = hands.process(image1)
+                results_hand = hands.process(image1) # xử lý tọa độ bàn tay
                 image2 = frame2
-                if results_hand.multi_hand_landmarks:
+                if results_hand.multi_hand_landmarks: # nếu có bàn tay trong khung hình thì tiếp tục
                     hand_landmarks = results_hand.multi_hand_landmarks[0] if results_hand.multi_hand_landmarks else None
                     if hand_landmarks:
-                        lm = self.make_landmark_timestep(hand_landmarks)
-                        lm_list.append(lm)
-                        if len(lm_list) == 9:
-                            label = self.detect(model, lm_list)
+                        lm = self.make_landmark_timestep(hand_landmarks)#  chuẩn hóa dữ liệu
+                        lm_list.append(lm)#thêm chuỗi dữ liệu vừa chuẩn hóa vào tập chứa các chuỗi dữ liệu liên tục
+                        if len(lm_list) == 12: # nếu đủ dữ liệu thì đưa vào mô hình
+                            label = self.detect(model, lm_list) #mô hình làm việc
                             lm_list = []
 
-                            if label != "neutral":
-                                if label == self.checkTrung:
-                                    f_cnt += 1  
+                            if label != "neutral": # nếu label phát hiện ra khác neutral thì tiếp tục
+                                if label == self.checkTrung: #nếu label 2 giống label 1 thì tiếp tục
+                                    f_cnt += 1 #tăng số lần xuất hiện của label 1
                                 else:
-                                    f_cnt = 1  
+                                    f_cnt = 1  #nếu label 2 khác label 1 thì cập nhật label 1 là label 2, cho f_cnt về 1
                                     self.checkTrung = label  
-                                if f_cnt >= 10:  
+                                if f_cnt >= 10 and confidence >= 0.85:  
+                                    #nếu 10 lần nhận diện cho ra kết quả giống nhau
+                                    #có độ tin cậy trên 0.85 thì thêm vào ô chat
                                     if label == "space":
                                         self.string += " "
                                     else:

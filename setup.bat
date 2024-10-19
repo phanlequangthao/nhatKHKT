@@ -1,3 +1,4 @@
+color e
 @echo off
 setlocal enabledelayedexpansion
 

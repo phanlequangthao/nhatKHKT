@@ -12,7 +12,7 @@ if len(physical_devices) > 0:
     tf.config.experimental.set_visible_devices(physical_devices[0], 'GPU')
 
 num_of_timesteps = 12
-model = load_model(f'model/model_12.keras')
+model = load_model(f'model/best_model_12.h5')
 
 mppose = mp.solutions.pose
 pose = mppose.Pose()

@@ -28,30 +28,30 @@ def make_dat(hand_landmarks):
     lm_list = []
     landmarks = hand_landmarks.landmark
     
-    base_x = landmarks[0].x
+    base_x = landmarks[0].x 
     base_y = landmarks[0].y
     base_z = landmarks[0].z
-    
+    #tọa độ x y z trước khi chuẩn hóa 
     center_x = np.mean([lm.x for lm in landmarks])
     center_y = np.mean([lm.y for lm in landmarks])
     center_z = np.mean([lm.z for lm in landmarks])
-
+    #tính tọa độ trung tâm của x y z
     distances = [np.sqrt((lm.x - center_x)**2 + (lm.y - center_y)**2 + (lm.z - center_z)**2) for lm in landmarks[1:]]
-
+    #tính khoảng cách giữa các điểm x_i y_i z_i với tọa độ trung tâm bằng khoảng cách euclid
     scale_factors = [1.0 / dist for dist in distances]
-
+    #hệ số tỉ lệ hóa
     lm_list.append(0.0)
     lm_list.append(0.0)
     lm_list.append(0.0)
     lm_list.append(landmarks[0].visibility)
-
+    #đặt gốc tọa độ Oxyz 
     for lm, scale_factor in zip(landmarks[1:], scale_factors):
         lm_list.append((lm.x - base_x) * scale_factor)
         lm_list.append((lm.y - base_y) * scale_factor)
         lm_list.append((lm.z - base_z) * scale_factor)
         lm_list.append(lm.visibility)
-    
-    print(f"Length of lm_list: {len(lm_list)}")  
+    #các tọa độ mới
+    print(f"len lmlist: {len(lm_list)}")  
     return lm_list
 
 def draw_land(mpDraw, results, img):

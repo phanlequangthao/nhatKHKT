@@ -49,7 +49,6 @@ model.add(Dropout(0.4))
 model.add(LSTM(units=64, return_sequences=False)) 
 model.add(Dropout(0.4))
 model.add(Dense(units=num_classes, activation="softmax"))
-
 model.compile(optimizer="adam", metrics=['accuracy'], loss="categorical_crossentropy")
 model.summary()
 
@@ -63,7 +62,7 @@ checkpoint = ModelCheckpoint(
     save_format='h5'  
 )
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)  
-history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_data=(X_test, y_test), callbacks=[early_stopping, checkpoint])
+history = model.fit(X_train, y_train, epochs=30, batch_size=258, validation_data=(X_test, y_test), callbacks=[early_stopping, checkpoint])
 
 
 model.save(f"model/model_{num_of_timesteps}.keras")
