@@ -2,7 +2,7 @@ import socket
 import threading
 import random
 
-host = '26.64.220.173'
+host = '26.202.115.239'
 port = 12345
 
 clients = {}

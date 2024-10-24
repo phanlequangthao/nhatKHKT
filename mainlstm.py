@@ -31,7 +31,7 @@ mppose = mp.solutions.pose
 pose = mppose.Pose()
 speak = Dispatch("SAPI.SpVoice").Speak
 server=imagiz.Server()
-host = '26.64.220.173'
+host = '26.202.115.239'
 port = 12345
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -110,7 +110,7 @@ class Video(QThread):
     vid = pyqtSignal(QImage)
     def run(self):
         self.hilo_corriendo = True
-        video_path = r"C:\Users\chojl\Pictures\Camera Roll\a2.mp4"
+        video_path = r"output.mp4"
         cap = cv2.VideoCapture(video_path)
         fps = cap.get(cv2.CAP_PROP_FPS)  # Get the frame rate
         delay = int(1000 / fps)  # Calculate delay between frames
@@ -129,14 +129,12 @@ class Video(QThread):
     def stop(self):
         self.hilo_corriendo = False
         self.quit()
-
-
 class Video2(QThread):
     vid2 = pyqtSignal(QImage)
 
     def run(self):
         self.check = True
-        video_path = r"a2.mp4"
+        video_path = r"output.mp4"
         cap = cv2.VideoCapture(video_path)
         
         fps = cap.get(cv2.CAP_PROP_FPS) 
@@ -172,6 +170,7 @@ class Ham_Camera(QThread):
     def __init__(self):
         super(Ham_Camera, self).__init__()
         self.checkTrung = ""
+        self.checkTrung2 = ""
         self.trangThai = True
         self.string = ""
         self.string2 = ""
@@ -229,6 +228,7 @@ class Ham_Camera(QThread):
 
     @staticmethod
     def detect(model, lm_list):
+        
         lm_list = np.array(lm_list)
         lm_list = np.expand_dims(lm_list, axis=0)
         results = model.predict(lm_list)
@@ -247,9 +247,10 @@ class Ham_Camera(QThread):
                 label = temp.replace("_", " ")
         else:
             label = "cant detect"
+        return label, confidence
 
     def run(self):
-        model = load_model('./model/best_model_12.h5')# chạy mô hình
+        model = load_model('best_model_12.h5')# chạy mô hình
 
         cap = cv2.VideoCapture(camera_index) #chạy camera
         cap.set(3, 640)
@@ -270,26 +271,27 @@ class Ham_Camera(QThread):
                 if results_hand.multi_hand_landmarks: # nếu có bàn tay trong khung hình thì tiếp tục
                     hand_landmarks = results_hand.multi_hand_landmarks[0] if results_hand.multi_hand_landmarks else None
                     if hand_landmarks:
-                        lm = self.make_landmark_timestep(hand_landmarks)#  chuẩn hóa dữ liệu
+                        lm = self.make_dat(hand_landmarks)#  chuẩn hóa dữ liệu
                         lm_list.append(lm)#thêm chuỗi dữ liệu vừa chuẩn hóa vào tập chứa các chuỗi dữ liệu liên tục
                         if len(lm_list) == 12: # nếu đủ dữ liệu thì đưa vào mô hình
-                            label = self.detect(model, lm_list) #mô hình làm việc
+                            label, confidence = self.detect(model, lm_list) #mô hình làm việc
                             lm_list = []
 
                             if label != "neutral": # nếu label phát hiện ra khác neutral thì tiếp tục
-                                if label == self.checkTrung: #nếu label 2 giống label 1 thì tiếp tục
+                                if label == self.checkTrung2: #nếu label 2 giống label 1 thì tiếp tục
                                     f_cnt += 1 #tăng số lần xuất hiện của label 1
                                 else:
                                     f_cnt = 1  #nếu label 2 khác label 1 thì cập nhật label 1 là label 2, cho f_cnt về 1
-                                    self.checkTrung = label  
-                                if f_cnt >= 10 and confidence >= 0.85:  
-                                    #nếu 10 lần nhận diện cho ra kết quả giống nhau
+                                    self.checkTrung2 = label  
+                                if f_cnt >= 6 and confidence >= 0.85 and label != self.checkTrung:  
+                                    #nếu 6 lần nhận diện cho ra kết quả giống nhau
                                     #có độ tin cậy trên 0.85 thì thêm vào ô chat
                                     if label == "space":
                                         self.string += " "
                                     else:
                                         self.string += label
                                     self.luongString1.emit(self.string)
+                                    self.checkTrung = label
                                     self.checkTrungChanged.emit(self.checkTrung)
 
                 image1.flags.writeable = True
@@ -363,8 +365,8 @@ class Ham_Chinh(QMainWindow):
         self.thread_camera.luongClearSignal.connect(self.process_string)
         self.thread_camera.checkTrungChanged.connect(self.handle_check_trung_changed)
         # Khởi tạo luồng video
-        self.img_dir = r'D:\a\img'
-        self.video_output_path = r'output_video.mp4'
+        self.img_dir = r'img1'
+        self.video_output_path = r'output.mp4'
         self.thread_vid = SpeechToVideoThread(self.img_dir, self.video_output_path)
         # Kết nối tín hiệu luongPixMap của luồng camera với hàm setCamera
         self.thread_camera.luongPixMap1.connect(self.setCamera1)
@@ -403,7 +405,7 @@ class Ham_Chinh(QMainWindow):
         
     def sendVideo(self):
         client.send("START_VIDEO".encode())
-        file_name = r'i.mp4'
+        file_name = r'output.mp4'
         file_size = os.path.getsize(file_name)
         time.sleep(5)
         client.send(f"{file_name}|{file_size}".encode())
@@ -411,13 +413,10 @@ class Ham_Chinh(QMainWindow):
         # Opening file and sending data.
         with open(file_name, "rb") as file:
             c = 0
-            i = 0
-            while c <= file_size:
+            while c < file_size:  # Changed from <= to <
                 data = file.read(1024)
-                if not (data):
+                if not data:
                     break
-                # print(i)
-                i += 1
                 client.sendall(data)
                 c += len(data)
                 print(c)
@@ -458,21 +457,22 @@ class Ham_Chinh(QMainWindow):
             # Nhận tên file và kích thước file
             file_info = client.recv(1024).decode()
             file_name, file_size = file_info.split("|")
-            file_size = int(file_size)
+            file_size = int(file_size)  # Convert file_size to int
         except Exception as e:
             print("Error receiving file info:", e)
             return
-        
+        print(file_name)
+        print(file_size)
         with open(file_name, "wb") as file:
             c = 0
-
-            while c <= int(file_size):
+            print("start")
+            while c < file_size:  # Changed from <= to <
                 data = client.recv(1024)
-                if not (data):
+                if not data:
                     break
                 file.write(data)
                 c += len(data)
-        
+            print("done r")
         self.Work2.start()
         self.Work2.vid2.connect(self.vidletter)
 
