@@ -250,7 +250,7 @@ class Ham_Camera(QThread):
         return label, confidence
 
     def run(self):
-        model = load_model('best_model_12.h5')# chạy mô hình
+        model = load_model('./model/best_model_12.h5')# chạy mô hình
 
         cap = cv2.VideoCapture(camera_index) #chạy camera
         cap.set(3, 640)
@@ -283,7 +283,7 @@ class Ham_Camera(QThread):
                                 else:
                                     f_cnt = 1  #nếu label 2 khác label 1 thì cập nhật label 1 là label 2, cho f_cnt về 1
                                     self.checkTrung2 = label  
-                                if f_cnt >= 6 and confidence >= 0.85 and label != self.checkTrung:  
+                                if f_cnt >= 4 and confidence >= 0.85 and label != self.checkTrung and label != "cant detect":  
                                     #nếu 6 lần nhận diện cho ra kết quả giống nhau
                                     #có độ tin cậy trên 0.85 thì thêm vào ô chat
                                     if label == "space":
@@ -436,8 +436,8 @@ class Ham_Chinh(QMainWindow):
                 if "OTHER_USER_IP:" in message:
                     other_user_ip = message.split(":")[1]
                     subprocess.Popen([sys.executable, "client_camera.py", "--server_ip", other_user_ip])
-                    subprocess.Popen([sys.executable, "test_client.py", "--host_ip", other_user_ip])
-                    subprocess.Popen([sys.executable, "test_server.py"])
+                    # subprocess.Popen([sys.executable, "test_client.py", "--host_ip", other_user_ip])
+                    # subprocess.Popen([sys.executable, "test_server.py"])
                     print("done")
                 elif message == "START_VIDEO":
                     print("Video data incoming...")

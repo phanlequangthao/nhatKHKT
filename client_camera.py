@@ -1,7 +1,12 @@
 import imagiz
 import cv2
+import argparse
 
-server_ip = "26.149.119.72"
+parser = argparse.ArgumentParser(description='c')
+parser.add_argument('--server_ip', type=str, required=True, help='i')
+args = parser.parse_args()
+
+server_ip = args.server_ip
 
 client = imagiz.Client("cc1", server_ip=server_ip)
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
