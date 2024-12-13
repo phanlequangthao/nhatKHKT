@@ -237,7 +237,7 @@ class Ham_Camera(QThread):
          'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
          'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
-         'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad']
+         'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad', 'tran bien']
         confidence = np.max(results, axis=1)[0]
         if confidence > 0.95:
             temp = classes[predicted_label_index]
