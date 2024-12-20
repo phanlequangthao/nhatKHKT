@@ -20,6 +20,7 @@ import tensorflow as tf
 from keras.models import load_model
 import base64
 import time
+import ctypes
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
@@ -31,7 +32,7 @@ mppose = mp.solutions.pose
 pose = mppose.Pose()
 speak = Dispatch("SAPI.SpVoice").Speak
 server=imagiz.Server()
-host = '26.202.115.239'
+host = '26.64.220.173'
 port = 12345
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -228,7 +229,6 @@ class Ham_Camera(QThread):
 
     @staticmethod
     def detect(model, lm_list):
-        
         lm_list = np.array(lm_list)
         lm_list = np.expand_dims(lm_list, axis=0)
         results = model.predict(lm_list)
@@ -239,14 +239,19 @@ class Ham_Camera(QThread):
          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
          'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad', 'tran bien']
         confidence = np.max(results, axis=1)[0]
+        
+        caps_lock_on = bool(ctypes.windll.user32.GetKeyState(0x14))  
+        
         if confidence > 0.95:
             temp = classes[predicted_label_index]
             if temp == "space":
                 label = " "
             else:
                 label = temp.replace("_", " ")
+                if caps_lock_on: 
+                    label = label.upper()
         else:
-            label = "cant detect"
+            label = ""
         return label, confidence
 
     def run(self):
@@ -436,6 +441,9 @@ class Ham_Chinh(QMainWindow):
                 if "OTHER_USER_IP:" in message:
                     other_user_ip = message.split(":")[1]
                     subprocess.Popen([sys.executable, "client_camera.py", "--server_ip", other_user_ip])
+                    print(other_user_ip)
+                    # subprocess.Popen([sys.executable, "test_client.py", "--host_ip", other_user_ip])
+                    # subprocess.Popen([sys.executable, "test_server.py"])
                     # subprocess.Popen([sys.executable, "test_client.py", "--host_ip", other_user_ip])
                     # subprocess.Popen([sys.executable, "test_server.py"])
                     print("done")
