@@ -10,12 +10,18 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.regularizers import l2
+import json 
+
+
+
 classes = ['a', 'b', 'c', 'o', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
          'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
          'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
          'who', 'where', 'how_much', 'go', 'happy', 'sad', 'bad']
 
+with open("labels.json", "r", encoding="utf-8") as f:
+    classes = json.load(f)
 
 num_of_timesteps = 12
 num_classes = len(classes)
@@ -24,9 +30,9 @@ X, y = [], []
 label = 0
 
 for cl in classes:
-    for file in os.listdir(f'./dataset/{cl}'):
-        print(f'Reading: ./dataset/{cl}/{file}')
-        data = pd.read_csv(f'./dataset/{cl}/{file}')
+    for file in os.listdir(f'./datasetpersonality/{cl}'):
+        print(f'Reading: ./datasetpersonality/{cl}/{file}')
+        data = pd.read_csv(f'./datasetpersonality/{cl}/{file}')
         data = data.values
         n_sample = len(data)
         print(n_sample)
@@ -53,7 +59,7 @@ model.compile(optimizer="adam", metrics=['accuracy'], loss="categorical_crossent
 model.summary()
 
 checkpoint = ModelCheckpoint(
-    filepath=f"model/best_model_{num_of_timesteps}.h5",  
+    filepath=f"modelpersonality/best_model_{num_of_timesteps}.h5",  
     monitor='val_loss',
     save_best_only=True,
     save_weights_only=False,
@@ -65,20 +71,20 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weig
 history = model.fit(X_train, y_train, epochs=30, batch_size=258, validation_data=(X_test, y_test), callbacks=[early_stopping, checkpoint])
 
 
-model.save(f"model/model_{num_of_timesteps}.keras")
+model.save(f"modelpersonality/model_{num_of_timesteps}.keras")
 
-tf.keras.utils.plot_model(
-    model,
-    to_file='model.png',
-    show_shapes=True,
-    show_dtype=True,
-    show_layer_names=True,
-    rankdir='TB',
-    expand_nested=True,
-    dpi=200,
-    show_layer_activations=True,
-    show_trainable=True,
-)
+# tf.keras.utils.plot_model(
+#     model,
+#     to_file='model.png',
+#     show_shapes=True,
+#     show_dtype=True,
+#     show_layer_names=True,
+#     rankdir='TB',
+#     expand_nested=True,
+#     dpi=200,
+#     show_layer_activations=True,
+#     show_trainable=True,
+# )
 
 def visualize_loss(history, title):
     loss = history.history["loss"]

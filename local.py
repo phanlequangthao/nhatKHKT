@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.uic import loadUi
@@ -20,6 +20,7 @@ import tensorflow as tf
 from keras.models import load_model
 import base64
 import time
+from cnh import PersonalityDialog
 confidence = 0
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
@@ -173,7 +174,7 @@ class Ham_Camera(QThread):
         self.luongString1.connect(self.update_string1)
         self.luongString2.connect(self.update_string2)
         self.luongClearSignal.connect(self.clear_string)
-
+        self.use_personalized_model = use_personalized_model
         self.latest_frame_from_server = None
 
     def update_string1(self, new_string):
@@ -230,8 +231,12 @@ class Ham_Camera(QThread):
         return label
     
     def run(self):
-        numotimestep = 9
-        model = load_model(f'./model/model_{numotimestep}.keras')
+        numotimestep = 12
+        if self.use_personalized_model:
+            pth = './modelpersonality/best_model_12.h5'
+        else:
+            pth = './model/best_model_12.h5'
+        model = load_model(pth)
 
         cap = cv2.VideoCapture(camera_index)
         cap.set(640,640)
@@ -351,6 +356,8 @@ class Ham_Chinh(QMainWindow):
         # self.stop_video.clicked.connect(self.stop_vide)
         self.thread_vid.audioTextChanged.connect(self.text_2.setText)
 
+        
+        self.personalize_button.clicked.connect(self.open_personalize_dialog)
 
         self.listen_thread = threading.Thread(target=self.listen_for_messages)
         self.listen_thread.start()
@@ -501,8 +508,29 @@ class Ham_Chinh(QMainWindow):
         self.stop_record_button.setEnabled(False)
         self.thread_vid.stop_recording()
     
+    def open_personalize_dialog(self):
+        """Mở cửa sổ Personalize Data"""
+        dialog = PersonalityDialog(self)
+
+        dialog.show()
 
 if __name__ == '__main__':
+    # Kiểm tra folder modelpersonality
+    use_personalized_model = False
+    if os.path.exists('modelpersonality'):
+        print("1. Dùng model mặc định")
+        print("2. Dùng model cá nhân hóa (modelpersonality)")
+        while True:
+            choice = input("Chọn 1 hoặc 2: ")
+            if choice == '1':
+                use_personalized_model = False
+                break
+            elif choice == '2':
+                use_personalized_model = True
+                break
+            else:
+                print("Lựa chọn không hợp lệ, vui lòng chọn lại.")
+
     camera_index = int(input("Nhập số camera bạn muốn chọn, 0 là webcam mặc định: "))
     app = QApplication(sys.argv)
     window = Ham_Chinh()

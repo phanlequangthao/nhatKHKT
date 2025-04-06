@@ -4,19 +4,19 @@ import cv2
 import mediapipe as mp
 import pandas as pd
 import numpy as np
-
+import json 
 mphands = mp.solutions.hands
 hands = mphands.Hands()
 mpDraw = mp.solutions.drawing_utils
-
+label = []
+with open("labels.json", "r", encoding="utf-8") as f:
+    label = json.load(f)
 # label = ['a', 'b', 'c', 'o', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
 #          'l', 'm', 'n', 'p', 'q', 'r', 's', 'space', 't', 'u',
 #          'v', 'w', 'x', 'y', 'z', 'yes', 'no', 'me', 'you', 'hello',
 #          'i_love_you', 'thank_you', 'sorry', 'do', 'eat', 'what', 'why', 
 #          'who', 'where', 'when', 'how', 'how_much', 'go', 'happy', 
 #          'sad', 'angry', 'good', 'bad']
-label = ['tran bien']
-
 
 # if os.path.exists('./dataset'):
 #     shutil.rmtree('./dataset')
@@ -87,13 +87,21 @@ def convert_coordinates(x1, y1, x2, y2, image_width, image_height):
     return x, y, w, h
 
 for cl in label:
+    video_folder = f'./videohandpersonality/{cl}'
+    output_folder = f'./datasetpersonality/{cl}'
+
+    if not os.path.exists(video_folder):
+        print(f"[SKIP] Không có thư mục video: {video_folder}")
+        continue
+
+    os.makedirs(output_folder, exist_ok=True)
     cnt = 0
     cnt_img = 0
-    for file in os.listdir(f'./videohand/{cl}'):
+    for file in os.listdir(f'./videohandpersonality/{cl}'):
         lm_list = []
         print(f'cnt: {cnt}, lm_list: {lm_list}')
-        print(f'processing: ./videohand/{cl}/{file}')   
-        cap = cv2.VideoCapture(f'./videohand/{cl}/{file}')
+        print(f'processing: ./videohandpersonality/{cl}/{file}')   
+        cap = cv2.VideoCapture(f'./videohandpersonality/{cl}/{file}')
         cap.set(3, 640)
         cap.set(4, 480)
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -125,7 +133,7 @@ for cl in label:
                 break
 
         df = pd.DataFrame(lm_list)
-        df.to_csv(f'./dataset/{cl}/{cl}_{cnt}.txt', index=False)
+        df.to_csv(f'./datasetpersonality/{cl}/{cl}_{cnt}.txt', index=False)
         cnt += 1
         cap.release()
         cv2.destroyAllWindows()

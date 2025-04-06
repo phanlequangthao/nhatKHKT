@@ -356,6 +356,38 @@
        </item>
       </layout>
      </widget>
+     <widget class="QPushButton" name="personalize_button">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>700</y>
+        <width>891</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="tabletTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+                              background-color: #4CAF50; /* Màu xanh lá cây */
+                              border: none;
+                              color: white;
+                              font: 16px &quot;Segoe UI&quot;;
+                              border-radius: 50px;
+                              padding: 10px 200px; /* Thêm padding */
+                          }
+                          QPushButton:pressed {
+                              background-color: #45a049; /* Màu khi nhấn */
+                          }</string>
+      </property>
+      <property name="text">
+       <string>Personalize</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">

@@ -12,7 +12,7 @@ if len(physical_devices) > 0:
     tf.config.experimental.set_visible_devices(physical_devices[0], 'GPU')
 
 num_of_timesteps = 12
-model = load_model(f'model/best_model_12.h5')
+model = load_model(f'modelpersonality/best_model_12.h5')
 
 mppose = mp.solutions.pose
 pose = mppose.Pose()
@@ -111,7 +111,7 @@ def detect(model, lm_list):
     label = classes[predicted_label_index]
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 cap.set(3, 1280)
 cap.set(4, 720)
 lm_list = []
